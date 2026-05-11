@@ -96,7 +96,7 @@ const BG_START = { r: 249, g: 233, b: 233 };
 const BG_END   = { r: 232, g: 54,  b: 79  };
 
 window.addEventListener("scroll", () => {
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
   if (maxScroll <= 0) return;
   const p = Math.min(window.scrollY / maxScroll, 1);
 
