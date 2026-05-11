@@ -26,7 +26,7 @@ main {
 /* ── Sections ── */
 
 .section {
-  height: 100dvh;
+  height: 100svh;
   padding: 1.5rem;
   pointer-events: none;
 }
