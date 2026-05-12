@@ -134,9 +134,13 @@ window.addEventListener("scroll", () => {
     anim.t4       = 0;
   } else {
     const t = (p - 0.40) / 0.60;
-    anim.x        = THREE.MathUtils.lerp(-INIT_X, 0, t);
-    anim.rotX     = THREE.MathUtils.lerp(0, 0.1, t);
-    anim.rotSpeed = THREE.MathUtils.lerp(0.022, 0.004, t);
+    // Wobble side-to-side on approach, fades out as fill begins
+    const wobble = fill < 0.12 ? Math.sin(t * Math.PI * 5) * 0.22 * (1 - fill / 0.12) : 0;
+    anim.x        = THREE.MathUtils.lerp(-INIT_X, 0, t) + wobble;
+    // Tilt while approaching, levels as it fills
+    anim.rotX     = 0.38 * (1 - Math.min(fill / 0.18, 1));
+    // Stay fast the whole approach, then dramatically brake as fill kicks in
+    anim.rotSpeed = THREE.MathUtils.lerp(0.044, 0.002, Math.min(fill / 0.35, 1));
     anim.scale    = THREE.MathUtils.lerp(1.0, 9.0, fill);
     anim.t4       = fill;
   }
@@ -177,7 +181,8 @@ function animate() {
   cur.rotSpeed += (anim.rotSpeed - cur.rotSpeed) * 0.1;
   cur.t4       += (anim.t4       - cur.t4)       * L;
 
-  const bob = Math.sin(tick * 0.9) * 0.06;
+  const bobAmp = 0.06 + (1 - cur.t4) * 0.1;
+  const bob = Math.sin(tick * 0.9) * bobAmp;
   group.position.y = bob;
   blob.position.y  = -1.32 - bob;
   blob.scale.setScalar(1 - Math.sin(tick * 0.9) * 0.04);
