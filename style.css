@@ -8,12 +8,12 @@ html:not(.js) :is(#s5, #work, #services, #contact) {
 }
 
 :is(#s1, #s2, #s3, #s4) {
-  height: 100svh;
+  height: 100dvh;
   pointer-events: none;
 }
 
 #s4 {
-  height: 200svh;
+  height: 200dvh;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -39,7 +39,7 @@ section {
 }
 
 #s5 {
-  min-height: 100svh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -90,7 +90,7 @@ section {
 /* ── Work ── */
 
 #work {
-  min-height: 100svh;
+  min-height: 100dvh;
   padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
@@ -356,7 +356,7 @@ section {
 #contact {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 100svh;
+  min-height: 100dvh;
 
   @media (max-width: 699px) {
     grid-template-columns: 1fr;

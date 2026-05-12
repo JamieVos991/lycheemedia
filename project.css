@@ -45,7 +45,7 @@ footer {
 /* ── Hero ── */
 
 .project-hero {
-  min-height: 100svh;
+  min-height: 100dvh;
   background: var(--color-ink);
   display: flex;
   flex-direction: column;
