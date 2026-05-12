@@ -7,7 +7,7 @@ scene.background = null;
 const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
 camera.position.set(0, 0.5, 5.5);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -63,7 +63,7 @@ const group = new THREE.Group();
 group.position.set(INIT_X, 0, 0);
 scene.add(group);
 
-const skinGeo = new THREE.SphereGeometry(1, 80, 80);
+const skinGeo = new THREE.SphereGeometry(1, 48, 48);
 displace(skinGeo);
 
 const skinMat = toon(0xc9293f);
@@ -85,9 +85,8 @@ blob.rotation.x = -Math.PI / 2;
 blob.position.y = -1.32;
 group.add(blob);
 
-function lycheScale() {
-  return THREE.MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
-}
+let _lycheScale = THREE.MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
+function lycheScale() { return _lycheScale; }
 
 // ── Scroll-driven animation ──────────────────────────────────────────────────
 const anim = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
@@ -148,6 +147,7 @@ window.addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  _lycheScale = THREE.MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
   cachePositions();
 });
 
@@ -155,6 +155,7 @@ window.addEventListener("resize", () => {
 let tick = 0;
 let rafId = null;
 let paused = false;
+let _lastCoversScreen = false;
 
 function resume() {
   if (paused) {
@@ -192,9 +193,12 @@ function animate() {
   const halfW = halfH * (innerWidth / innerHeight);
   const screenRadius = Math.sqrt(halfH * halfH + halfW * halfW);
   const coversScreen = cur.scale * lycheScale() >= screenRadius;
-  document.body.style.background = coversScreen
-    ? `rgb(${BG_END.r},${BG_END.g},${BG_END.b})`
-    : `rgb(${BG_START.r},${BG_START.g},${BG_START.b})`;
+  if (coversScreen !== _lastCoversScreen) {
+    _lastCoversScreen = coversScreen;
+    document.body.style.background = coversScreen
+      ? `rgb(${BG_END.r},${BG_END.g},${BG_END.b})`
+      : `rgb(${BG_START.r},${BG_START.g},${BG_START.b})`;
+  }
 
   // Lychee fades out after fill is complete
   const fadeT = THREE.MathUtils.smoothstep(cur.t4, 0.75, 0.98);
