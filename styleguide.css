@@ -1,0 +1,87 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 0.2rem solid #fff;
+  outline-offset: 0.2rem;
+  box-shadow: 0 0 0 0.3rem var(--color-ink);
+}
+
+:root {
+  --color-bg: rgb(249, 233, 233);
+  --color-primary: #c9293f;
+  --color-ink: #111;
+  --color-muted: #555;
+  --color-light: rgba(255, 255, 255, 0.92);
+
+  --font: sans-serif;
+  --min-font-size: 1rem;
+  --border: 0.15rem solid var(--color-ink);
+  --shadow: 0.2rem 0.2rem 0 var(--color-ink);
+}
+
+body {
+  background: var(--color-bg);
+  font-family: var(--font);
+  font-size: var(--min-font-size);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+canvas {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+h1,
+h2 {
+  font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-light);
+}
+
+.btn {
+  box-shadow: var(--shadow);
+  background: var(--color-primary);
+  border: var(--border);
+
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 1rem;
+  transition: transform 0.1s, box-shadow 0.1s;
+  cursor: pointer;
+
+  &:hover {
+    transform: translate(-0.125rem, -0.125rem);
+    box-shadow: 0.3125rem 0.3125rem 0 var(--color-ink);
+  }
+}
+
+.skip-link {
+  background: var(--color-ink);
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 100;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+  padding: 1rem;
+
+  &:focus {
+    top: 1rem;
+  }
+}

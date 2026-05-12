@@ -10,6 +10,7 @@ camera.position.set(0, 0.5, 5.5);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.domElement.setAttribute('aria-hidden', 'true');
 document.body.appendChild(renderer.domElement);
 
 const INIT_X = 1.6;
@@ -65,7 +66,7 @@ scene.add(group);
 const skinGeo = new THREE.SphereGeometry(1, 80, 80);
 displace(skinGeo);
 
-const skinMat = toon(0xe8364f);
+const skinMat = toon(0xc9293f);
 skinMat.transparent = true;
 const skinMesh = new THREE.Mesh(skinGeo, skinMat);
 group.add(skinMesh);
@@ -93,34 +94,52 @@ const anim = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
 const cur  = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
 
 const BG_START = { r: 249, g: 233, b: 233 };
-const BG_END   = { r: 232, g: 54,  b: 79  };
+const BG_END   = { r: 201, g: 41,  b: 63  };
+
+// Positions based on actual elements so adding sections below doesn't break anything
+let animHeight = 1, fillStart = 0, fillEnd = 1;
+
+function cachePositions() {
+  const s1el = document.getElementById('s1');
+  const s4el = document.getElementById('s4');
+  const s5el = document.getElementById('s5');
+  const vh   = document.documentElement.clientHeight;
+  animHeight = s4el.offsetTop + s4el.offsetHeight - s1el.offsetTop;
+  fillStart  = s5el.offsetTop - vh;        // s5 bottom edge entering viewport
+  fillEnd    = s5el.offsetTop - vh * 0.25; // h2 well in view
+}
+cachePositions();
 
 window.addEventListener("scroll", () => {
-  const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  if (maxScroll <= 0) return;
-  const p = Math.min(window.scrollY / maxScroll, 1);
+  const scrollY = window.scrollY;
 
-  if (p < 0.33) {
-    const t = p / 0.33;
+  // p: 0–1 across s1→end of s4 only
+  const p = THREE.MathUtils.clamp(scrollY / animHeight, 0, 1);
+
+  // fill: 0–1 as s5 scrolls into view
+  const fill = THREE.MathUtils.clamp((scrollY - fillStart) / Math.max(fillEnd - fillStart, 1), 0, 1);
+
+  if (p < 0.20) {
+    const t = p / 0.20;
     anim.x        = THREE.MathUtils.lerp(INIT_X, 0, t);
     anim.scale    = THREE.MathUtils.lerp(1.0, 1.28, t);
     anim.rotX     = THREE.MathUtils.lerp(0, 0.42, t);
     anim.rotSpeed = THREE.MathUtils.lerp(0.005, 0.002, t);
     anim.t4       = 0;
-  } else if (p < 0.67) {
-    const t = (p - 0.33) / 0.34;
+  } else if (p < 0.40) {
+    const t = (p - 0.20) / 0.20;
     anim.x        = THREE.MathUtils.lerp(0, -INIT_X, t);
     anim.scale    = THREE.MathUtils.lerp(1.28, 1.0, t);
     anim.rotX     = THREE.MathUtils.lerp(0.42, 0, t);
-    anim.rotSpeed = THREE.MathUtils.lerp(0.002, 0.022, t);
+    anim.rotSpeed = THREE.MathUtils.lerp(0.002, 0.044, t);
     anim.t4       = 0;
   } else {
-    const t = (p - 0.67) / 0.33;
+    const t = (p - 0.40) / 0.60;
     anim.x        = THREE.MathUtils.lerp(-INIT_X, 0, t);
-    anim.scale    = THREE.MathUtils.lerp(1.0, 9.0, t);
-    anim.rotX     = THREE.MathUtils.lerp(0, 0.18, t);
-    anim.rotSpeed = THREE.MathUtils.lerp(0.022, 0.002, t);
-    anim.t4       = t;
+    anim.rotX     = THREE.MathUtils.lerp(0, 0.1, t);
+    anim.rotSpeed = THREE.MathUtils.lerp(0.022, 0.004, t);
+    anim.scale    = THREE.MathUtils.lerp(1.0, 9.0, fill);
+    anim.t4       = fill;
   }
 }, { passive: true });
 
@@ -129,6 +148,7 @@ window.addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  cachePositions();
 });
 
 // ── Render loop ──────────────────────────────────────────────────────────────
@@ -176,8 +196,8 @@ function animate() {
     ? `rgb(${BG_END.r},${BG_END.g},${BG_END.b})`
     : `rgb(${BG_START.r},${BG_START.g},${BG_START.b})`;
 
-  // Section 4: lychee fades out once background has settled
-  const fadeT = THREE.MathUtils.smoothstep(cur.t4, 0.55, 0.92);
+  // Lychee fades out after fill is complete
+  const fadeT = THREE.MathUtils.smoothstep(cur.t4, 0.75, 0.98);
   const meshOpacity = 1 - fadeT;
   skinMat.opacity    = meshOpacity;
   outlineMat.opacity = meshOpacity;
@@ -186,11 +206,79 @@ function animate() {
   controls.update();
   renderer.render(scene, camera);
 
-  // Stop rendering once lychee is invisible and screen is covered
-  if (meshOpacity < 0.005 && coversScreen) {
+  // Stop once fill is done and lychee has faded
+  if (cur.t4 > 0.99 && meshOpacity < 0.01) {
     cancelAnimationFrame(rafId);
     paused = true;
+    document.body.style.background = `rgb(${BG_END.r},${BG_END.g},${BG_END.b})`;
   }
 }
 
 animate();
+
+// Count-up animation for stats
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseInt(el.dataset.target);
+    const duration = 1200;
+    const start = performance.now();
+    (function tick(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target);
+      if (p < 1) requestAnimationFrame(tick);
+    })(start);
+    countObserver.unobserve(el);
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('dd[data-target]').forEach(el => countObserver.observe(el));
+
+// Contact form
+const contactForm = document.getElementById('contact-form');
+const contactStatus = document.getElementById('contact-status');
+
+contactForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // Honeypot check — if filled, silently bail
+  if (contactForm.querySelector('[name="_gotcha"]').value) return;
+
+  const btn = contactForm.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Versturen…';
+  contactStatus.textContent = '';
+
+  try {
+    const res = await fetch(contactForm.action, {
+      method: 'POST',
+      body: new FormData(contactForm),
+      headers: { Accept: 'application/json' },
+    });
+
+    if (res.ok) {
+      contactStatus.textContent = 'Bedankt! We nemen snel contact op.';
+      contactForm.reset();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      contactStatus.textContent = data?.errors?.[0]?.message ?? 'Er ging iets mis. Probeer het opnieuw.';
+    }
+  } catch {
+    contactStatus.textContent = 'Er ging iets mis. Controleer je verbinding.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Verstuur';
+  }
+});
+
+// Carousel buttons
+const track = document.getElementById('work-track');
+const cardWidth = () => track.querySelector('article').offsetWidth + 16; // gap
+document.getElementById('work-prev').addEventListener('click', () => {
+  track.scrollBy({ left: -cardWidth(), behavior: 'smooth' });
+});
+document.getElementById('work-next').addEventListener('click', () => {
+  track.scrollBy({ left: cardWidth(), behavior: 'smooth' });
+});

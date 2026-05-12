@@ -1,0 +1,15 @@
+<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lychees.studio">
+  <title>Lychees.studio</title>
+  <path
+    d="M 18 17 Q 25 9 32 17
+       Q 41 20 39 29
+       Q 41 38 32 41
+       Q 25 49 18 41
+       Q 9 38 11 29
+       Q 9 20 18 17 Z"
+    fill="#c9293f"
+    stroke="#1a1a1a"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+</svg>
