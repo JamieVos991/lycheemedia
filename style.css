@@ -152,14 +152,20 @@ section {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    position: relative;
+    overflow: hidden;
 
-    &:nth-of-type(1) {
-    }
-
-    &:nth-of-type(2) {
-    }
-
-    &:nth-of-type(3) {
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.72) 0%,
+        transparent 65%
+      );
+      pointer-events: none;
     }
 
     span {
@@ -167,19 +173,25 @@ section {
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--color-primary);
+      color: #fff;
+      position: relative;
+      z-index: 1;
     }
 
     h3 {
       font-size: 1.4rem;
       font-weight: 800;
-      color: var(--color-ink);
+      color: #fff;
+      position: relative;
+      z-index: 1;
     }
 
     p {
       font-size: 1rem;
-      color: var(--color-muted);
+      color: rgba(255, 255, 255, 0.75);
       line-height: 1.5;
+      position: relative;
+      z-index: 1;
     }
   }
 
@@ -196,7 +208,15 @@ section {
   }
 
   li:first-child article {
-    /* background-image: url(./image.png); */
+    background-image: url(lux.png);
+  }
+
+  li:nth-of-type(2) article {
+    background-image: url(strakplannew.png);
+  }
+
+  li:nth-of-type(3) article {
+    background-image: url(artquake.png);
   }
 }
 
