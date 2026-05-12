@@ -54,6 +54,7 @@ h2 {
   background: var(--color-primary);
   border: var(--border);
 
+  width: max-content;
   color: #fff;
   font-weight: 800;
   font-size: 1rem;

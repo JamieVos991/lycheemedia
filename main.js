@@ -240,6 +240,27 @@ const countObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('dd[data-target]').forEach(el => countObserver.observe(el));
 
+// Confetti
+function launchConfetti() {
+  const colors = ['#c9293f', '#111111', '#f9e9e9', '#ffffff', '#e8394f', '#ffaaaa'];
+  for (let i = 0; i < 90; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const size = Math.random() * 0.5 + 0.3;
+    el.style.cssText = `
+      left:${Math.random() * 100}vw;
+      width:${size}rem;
+      height:${size * (Math.random() > 0.5 ? 2 : 1)}rem;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      animation-duration:${Math.random() * 1.5 + 1.5}s;
+      animation-delay:${Math.random() * 0.6}s;
+    `;
+    el.style.setProperty('--drift', `${(Math.random() - 0.5) * 10}rem`);
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
 // Contact form
 const contactForm = document.getElementById('contact-form');
 const contactStatus = document.getElementById('contact-status');
@@ -263,8 +284,14 @@ contactForm.addEventListener('submit', async (e) => {
     });
 
     if (res.ok) {
-      contactStatus.textContent = 'Bedankt! We nemen snel contact op.';
-      contactForm.reset();
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        launchConfetti();
+      }
+      contactForm.classList.add('contact-success');
+      contactForm.innerHTML = `
+        <p class="success-title">Bedankt!</p>
+        <p class="success-sub">We nemen zo snel mogelijk contact op.</p>
+      `;
     } else {
       const data = await res.json().catch(() => ({}));
       contactStatus.textContent = data?.errors?.[0]?.message ?? 'Er ging iets mis. Probeer het opnieuw.';
