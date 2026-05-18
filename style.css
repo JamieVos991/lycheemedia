@@ -405,6 +405,91 @@ section {
   }
 }
 
+/* ── Reviews ── */
+
+#reviews {
+  padding: 6rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  h2 {
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    color: var(--color-light);
+    letter-spacing: -0.03em;
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 48rem;
+  }
+
+  li {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.8rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  blockquote p {
+    font-size: 1rem;
+    color: var(--color-light);
+    line-height: 1.7;
+  }
+
+  footer {
+    position: static;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    pointer-events: auto;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-light);
+  }
+}
+
+.reviews-link {
+  color: var(--color-light);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.review-avatar {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: #4a90a4;
+  flex-shrink: 0;
+}
+
+.review-stars {
+  color: #f5c518;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
 /* ── Contact ── */
 
 #contact {
