@@ -45,6 +45,7 @@ section {
   justify-content: center;
   gap: 3rem;
   padding: 4rem 2rem;
+  background: #c9293f;
 
   dl {
     display: flex;
@@ -94,7 +95,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  background: rgba(0, 0, 0, 0.12);
+  background: #b02437;
 
   @media (min-width: 700px) {
     flex-direction: row;
@@ -136,8 +137,7 @@ section {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-light);
-  opacity: 0.6;
+  color: #fff;
   margin-bottom: 0.75rem;
 }
 
@@ -151,6 +151,7 @@ section {
   justify-content: center;
   gap: 2rem;
   position: relative;
+  background: #c9293f;
 
   p {
     font-size: 1rem;
@@ -325,7 +326,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  background: rgba(0, 0, 0, 0.12);
+  background: #b02437;
 
   & > p {
     font-size: 1rem;
@@ -375,8 +376,7 @@ section {
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.12em;
-    color: var(--color-light);
-    opacity: 0.6;
+    color: #fff;
   }
 
   h3 {
@@ -412,6 +412,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  background: #c9293f;
 
   h2 {
     font-weight: 800;
@@ -464,15 +465,14 @@ section {
 }
 
 .reviews-link {
-  color: var(--color-light);
+  color: #fff;
   font-size: 0.85rem;
   font-weight: 800;
   text-decoration: none;
-  opacity: 0.7;
-  transition: opacity 0.15s;
+  transition: text-decoration 0.15s;
 
   &:hover {
-    opacity: 1;
+    text-decoration: underline;
   }
 }
 
