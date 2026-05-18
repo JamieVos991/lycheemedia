@@ -87,6 +87,57 @@ section {
   }
 }
 
+/* ── WCAG CTA ── */
+
+#wcag-cta {
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: var(--color-primary);
+
+  @media (min-width: 700px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 36rem;
+  }
+
+  .btn {
+    background: #fff;
+    color: var(--color-primary);
+    border-color: #fff;
+    box-shadow: 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &:hover {
+      box-shadow: 0.3125rem 0.3125rem 0 rgba(0, 0, 0, 0.25);
+    }
+  }
+}
+
+.wcag-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 0.75rem;
+}
+
 /* ── Work ── */
 
 #work {
