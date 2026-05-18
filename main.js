@@ -273,6 +273,7 @@ const contactStatus = document.getElementById('contact-status');
 contactForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+
   // Honeypot check — if filled, silently bail
   if (contactForm.querySelector('[name="_gotcha"]').value) return;
 
@@ -306,6 +307,7 @@ contactForm.addEventListener('submit', async (e) => {
   } finally {
     btn.disabled = false;
     btn.textContent = 'Verstuur';
+    plausible('Contact Form Submit')
   }
 });
 
