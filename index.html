@@ -3,11 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lychees.studio</title>
+
+    <title>Toegankelijke websites op maat — Lychees.studio</title>
     <meta
       name="description"
-      content="Toegankelijke websites door Lychees.studio"
+      content="Toegankelijke, razendsnelle websites die voldoen aan WCAG 2.1 AA en de EAA. Specialist webdesign voor het Nederlandse MKB. Vraag een gratis quick-scan aan."
     />
+
+    <!-- Open Graph (LinkedIn, Facebook, etc.) -->
+    <meta
+      property="og:title"
+      content="Toegankelijke websites op maat — Lychees.studio"
+    />
+    <meta
+      property="og:description"
+      content="Toegankelijke, razendsnelle websites die voldoen aan WCAG 2.1 AA en de EAA. Specialist webdesign voor het Nederlandse MKB."
+    />
+    <meta property="og:image" content="https://lychees.studio/logo.png" />
+    <meta property="og:url" content="https://lychees.studio" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nl_NL" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Toegankelijke websites op maat — Lychees.studio"
+    />
+    <meta
+      name="twitter:description"
+      content="WCAG 2.1 AA en EAA compliant websites voor het Nederlandse MKB."
+    />
+    <meta name="twitter:image" content="https://lychees.studio/logo.png" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://lychees.studio" />
+
     <link rel="icon" href="logo-small.png" />
 
     <!-- Links -->
@@ -39,6 +70,66 @@
             plausible.o = i || {};
           });
       plausible.init();
+    </script>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Lychees.studio",
+        "url": "https://lychees.studio",
+        "logo": "https://lychees.studio/logo.png",
+        "image": "https://lychees.studio/logo.png",
+        "description": "Toegankelijke, razendsnelle websites die voldoen aan WCAG 2.1 AA en de European Accessibility Act. Specialist webdesign voor het Nederlandse MKB.",
+        "areaServed": {
+          "@type": "Country",
+          "name": "Nederland"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "NL",
+          "addressRegion": "Noord-Holland"
+        },
+        "sameAs": ["https://www.linkedin.com/company/lychees-studio"],
+        "knowsAbout": [
+          "WCAG 2.1 AA",
+          "European Accessibility Act",
+          "Toegankelijke websites",
+          "Frontend development",
+          "SEO"
+        ],
+        "makesOffer": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Toegankelijke website laten maken"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "WCAG audit"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Frontend development"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "SEO en performance optimalisatie"
+            }
+          }
+        ]
+      }
     </script>
   </head>
   <body>
