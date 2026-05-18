@@ -464,6 +464,29 @@ footer {
   pointer-events: none;
 }
 
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+
+  a {
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+
+    &:hover {
+      color: var(--color-ink);
+    }
+
+    &[aria-current="page"] {
+      color: var(--color-ink);
+    }
+  }
+}
+
 /* ── Contact success state ── */
 
 #contact form.contact-success {
