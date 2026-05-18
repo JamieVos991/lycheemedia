@@ -94,7 +94,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  background: var(--color-primary);
+  background: rgba(0, 0, 0, 0.12);
 
   @media (min-width: 700px) {
     flex-direction: row;
@@ -104,27 +104,29 @@ section {
 
   h2 {
     font-size: clamp(1.4rem, 3vw, 2.2rem);
-    color: #fff;
+    color: var(--color-light);
     margin-bottom: 0.5rem;
   }
 
   p {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--color-light);
     font-size: 1rem;
     line-height: 1.6;
     max-width: 36rem;
   }
 
   .btn {
-    background: #fff;
-    color: var(--color-primary);
-    border-color: #fff;
-    box-shadow: 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.25);
-    white-space: nowrap;
     flex-shrink: 0;
 
-    &:hover {
-      box-shadow: 0.3125rem 0.3125rem 0 rgba(0, 0, 0, 0.25);
+    @media (min-width: 700px) {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 699px) {
+      width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
     }
   }
 }
@@ -134,7 +136,8 @@ section {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--color-light);
+  opacity: 0.6;
   margin-bottom: 0.75rem;
 }
 
@@ -148,7 +151,6 @@ section {
   justify-content: center;
   gap: 2rem;
   position: relative;
-  background: rgba(0, 0, 0, 0.12);
 
   p {
     font-size: 1rem;
@@ -323,6 +325,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  background: rgba(0, 0, 0, 0.12);
 
   & > p {
     font-size: 1rem;
