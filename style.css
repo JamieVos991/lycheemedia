@@ -606,14 +606,16 @@ footer {
 .lang-switcher {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding-left: 0.5rem;
+  gap: 0.35rem;
+  padding-left: 0.6rem;
   border-left: 1px solid rgba(0, 0, 0, 0.15);
   pointer-events: auto;
 
   a {
     color: var(--color-muted);
     text-decoration: none;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.1rem;
     transition: color 0.15s;
 
     &:hover {
