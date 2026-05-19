@@ -45,7 +45,7 @@ section {
   justify-content: center;
   gap: 3rem;
   padding: 4rem 2rem;
-  background: #c9293f;
+  background: rgba(201, 41, 63, 0.92);
 
   dl {
     display: flex;
@@ -67,12 +67,14 @@ section {
     font-weight: 800;
     color: var(--color-light);
     line-height: 1;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
   }
 
   dt {
     font-size: 0.7rem;
     font-weight: 800;
     color: var(--color-light);
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
     margin-top: 0.3rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -262,15 +264,15 @@ section {
   }
 
   li:first-child article {
-    background-image: url(lux.png);
+    background-image: url(../images/luxcleaning.avif);
   }
 
   li:nth-of-type(2) article {
-    background-image: url(strakplannew.png);
+    background-image: url(../images/strakplan.avif);
   }
 
   li:nth-of-type(3) article {
-    background-image: url(artquake.png);
+    background-image: url(../images/artquake.avif);
   }
 }
 
