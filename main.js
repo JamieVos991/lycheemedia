@@ -88,34 +88,30 @@ group.add(blob);
 let _lycheScale = THREE.MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
 function lycheScale() { return _lycheScale; }
 
-// ── Scroll-driven animation ──────────────────────────────────────────────────
 const anim = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
 const cur  = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
 
 const BG_START = { r: 249, g: 233, b: 233 };
 const BG_END   = { r: 201, g: 41,  b: 63  };
 
-// Positions based on actual elements so adding sections below doesn't break anything
 let animHeight = 1, fillStart = 0, fillEnd = 1;
 
 function cachePositions() {
-  const s1el = document.getElementById('s1');
-  const s4el = document.getElementById('s4');
-  const s5el = document.getElementById('s5');
+  const s1el = document.querySelector('section:nth-of-type(1)');
+  const s4el = document.querySelector('section:nth-of-type(4)');
+  const s5el = document.querySelector('section:nth-of-type(5)');
   const vh   = document.documentElement.clientHeight;
   animHeight = s4el.offsetTop + s4el.offsetHeight - s1el.offsetTop;
-  fillStart  = s5el.offsetTop - vh;        // s5 bottom edge entering viewport
-  fillEnd    = s5el.offsetTop - vh * 0.25; // h2 well in view
+  fillStart  = s5el.offsetTop - vh;       
+  fillEnd    = s5el.offsetTop - vh * 0.25; 
 }
 cachePositions();
 
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
 
-  // p: 0–1 across s1→end of s4 only
   const p = THREE.MathUtils.clamp(scrollY / animHeight, 0, 1);
 
-  // fill: 0–1 as s5 scrolls into view
   const fill = THREE.MathUtils.clamp((scrollY - fillStart) / Math.max(fillEnd - fillStart, 1), 0, 1);
 
   if (p < 0.20) {
@@ -134,19 +130,17 @@ window.addEventListener("scroll", () => {
     anim.t4       = 0;
   } else {
     const t = (p - 0.40) / 0.60;
-    // Wobble side-to-side on approach, fades out as fill begins
     const wobble = fill < 0.12 ? Math.sin(t * Math.PI * 5) * 0.22 * (1 - fill / 0.12) : 0;
     anim.x        = THREE.MathUtils.lerp(-INIT_X, 0, t) + wobble;
-    // Tilt while approaching, levels as it fills
+   
     anim.rotX     = 0.38 * (1 - Math.min(fill / 0.18, 1));
-    // Stay fast the whole approach, then dramatically brake as fill kicks in
     anim.rotSpeed = THREE.MathUtils.lerp(0.044, 0.002, Math.min(fill / 0.35, 1));
+    
     anim.scale    = THREE.MathUtils.lerp(1.0, 9.0, fill);
     anim.t4       = fill;
   }
 }, { passive: true });
 
-// ── Resize ───────────────────────────────────────────────────────────────────
 window.addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
@@ -155,7 +149,6 @@ window.addEventListener("resize", () => {
   cachePositions();
 });
 
-// ── Render loop ──────────────────────────────────────────────────────────────
 let tick = 0;
 let rafId = null;
 let paused = false;
@@ -193,7 +186,6 @@ function animate() {
   group.scale.setScalar(cur.scale * lycheScale());
   controls.target.x     = cur.x;
 
-  // Snap bg to lychee red once the sphere covers the full viewport
   const halfH = camera.position.z * Math.tan((camera.fov / 2) * Math.PI / 180);
   const halfW = halfH * (innerWidth / innerHeight);
   const screenRadius = Math.sqrt(halfH * halfH + halfW * halfW);
@@ -205,7 +197,6 @@ function animate() {
       : `rgb(${BG_START.r},${BG_START.g},${BG_START.b})`;
   }
 
-  // Lychee fades out after fill is complete
   const fadeT = THREE.MathUtils.smoothstep(cur.t4, 0.75, 0.98);
   const meshOpacity = 1 - fadeT;
   skinMat.opacity    = meshOpacity;
@@ -215,7 +206,6 @@ function animate() {
   controls.update();
   renderer.render(scene, camera);
 
-  // Stop once fill is done and lychee has faded
   if (cur.t4 > 0.99 && meshOpacity < 0.01) {
     cancelAnimationFrame(rafId);
     paused = true;
@@ -225,7 +215,6 @@ function animate() {
 
 animate();
 
-// Count-up animation for stats
 const countObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -245,7 +234,6 @@ const countObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('dd[data-target]').forEach(el => countObserver.observe(el));
 
-// Confetti
 function launchConfetti() {
   const colors = ['#c9293f', '#111111', '#f9e9e9', '#ffffff', '#e8394f', '#ffaaaa'];
   for (let i = 0; i < 90; i++) {
@@ -266,7 +254,6 @@ function launchConfetti() {
   }
 }
 
-// Contact form
 const contactForm = document.getElementById('contact-form');
 const contactStatus = document.getElementById('contact-status');
 
@@ -274,7 +261,6 @@ contactForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
 
-  // Honeypot check — if filled, silently bail
   if (contactForm.querySelector('[name="_gotcha"]').value) return;
 
   const btn = contactForm.querySelector('button[type="submit"]');
@@ -311,9 +297,8 @@ contactForm.addEventListener('submit', async (e) => {
   }
 });
 
-// Carousel buttons
 const track = document.getElementById('work-track');
-const cardWidth = () => track.querySelector('article').offsetWidth + 16; // gap
+const cardWidth = () => track.querySelector('article').offsetWidth + 16; 
 document.getElementById('work-prev').addEventListener('click', () => {
   track.scrollBy({ left: -cardWidth(), behavior: 'smooth' });
 });
