@@ -113,8 +113,10 @@ function startReveal() {
 
   clickActive = true;
   clickProgress = 0;
-  lycheBtn.style.opacity = '0';
-  lycheBtn.style.pointerEvents = 'none';
+  if (lycheBtn) {
+    lycheBtn.style.opacity = '0';
+    lycheBtn.style.pointerEvents = 'none';
+  }
   if (paused) {
     paused = false;
     animate();
@@ -140,7 +142,7 @@ renderer.domElement.addEventListener('click', (e) => {
   }
 });
 
-lycheBtn.addEventListener('click', startReveal);
+if (lycheBtn) lycheBtn.addEventListener('click', startReveal);
 
 window.addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;

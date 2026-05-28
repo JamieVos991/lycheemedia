@@ -46,7 +46,10 @@
 
     <!-- Preconnect & preload Three.js -->
     <link rel="preconnect" href="https://unpkg.com" crossorigin />
-    <link rel="modulepreload" href="https://unpkg.com/three@0.160.0/build/three.module.js" />
+    <link
+      rel="modulepreload"
+      href="https://unpkg.com/three@0.160.0/build/three.module.js"
+    />
 
     <!-- Links -->
     <link rel="stylesheet" href="../styles/styleguide.css" />
@@ -150,12 +153,14 @@
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
 
-    <main id="main">
-      <section id="s1" aria-hidden="true"></section>
-      <section id="s2" aria-hidden="true"></section>
-      <section id="s3" aria-hidden="true"></section>
-      <section id="s4" aria-hidden="true"></section>
+    <button id="lychee-btn" aria-label="Show website content">
+      <span class="lychee-tagline" aria-hidden="true"
+        >this is the heart of lychees.studio. <br />Click me, I'll burst
+        open.</span
+      >
+    </button>
 
+    <main id="main">
       <section id="s5" aria-labelledby="s5-title">
         <h1 class="h1-font" id="s5-title">
           A good website works for everyone, always and everywhere.
@@ -176,7 +181,9 @@
       <section id="wcag-cta" aria-labelledby="wcag-cta-title">
         <div>
           <p class="wcag-label">EAA — in effect since 28 June 2025</p>
-          <h2 class="h3-font" id="wcag-cta-title">Non-accessible websites now risk fines.</h2>
+          <h2 class="h3-font" id="wcag-cta-title">
+            Non-accessible websites now risk fines.
+          </h2>
           <p>
             The European Accessibility Act requires businesses to meet WCAG 2.1
             AA. The deadline has passed — are you compliant?
