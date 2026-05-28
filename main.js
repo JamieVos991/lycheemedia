@@ -30,9 +30,9 @@ scene.add(new THREE.AmbientLight(0xffffff, 1.8));
 const sun = new THREE.DirectionalLight(0xffffff, 2.0);
 sun.position.set(5, 8, 6);
 scene.add(sun);
-const fill = new THREE.DirectionalLight(0xffccdd, 0.8);
-fill.position.set(-4, 2, -3);
-scene.add(fill);
+const fillLight = new THREE.DirectionalLight(0xffccdd, 0.8);
+fillLight.position.set(-4, 2, -3);
+scene.add(fillLight);
 
 const gradData = new Uint8Array([60, 140, 230]);
 const gradMap = new THREE.DataTexture(gradData, 3, 1, THREE.RedFormat);
@@ -94,59 +94,59 @@ const cur  = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
 const BG_START = { r: 249, g: 233, b: 233 };
 const BG_END   = { r: 201, g: 41,  b: 63  };
 
-let animHeight = 1, fillStart = 0, fillEnd = 1;
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+let isHovering = false;
+let clickActive = false;
+let clickProgress = 0;
 
-function cachePositions() {
-  const s1el = document.querySelector('section:nth-of-type(1)');
-  const s4el = document.querySelector('section:nth-of-type(4)');
-  const s5el = document.querySelector('section:nth-of-type(5)');
-  const vh   = document.documentElement.clientHeight;
-  animHeight = s4el.offsetTop + s4el.offsetHeight - s1el.offsetTop;
-  fillStart  = s5el.offsetTop - vh;       
-  fillEnd    = s5el.offsetTop - vh * 0.25; 
-}
-cachePositions();
+const lycheBtn = document.getElementById('lychee-btn');
 
-window.addEventListener("scroll", () => {
-  const scrollY = window.scrollY;
+function startReveal() {
+  if (clickActive || document.documentElement.classList.contains('revealed')) return;
 
-  const p = THREE.MathUtils.clamp(scrollY / animHeight, 0, 1);
-
-  const fill = THREE.MathUtils.clamp((scrollY - fillStart) / Math.max(fillEnd - fillStart, 1), 0, 1);
-
-  if (p < 0.20) {
-    const t = p / 0.20;
-    anim.x        = THREE.MathUtils.lerp(INIT_X, 0, t);
-    anim.scale    = THREE.MathUtils.lerp(1.0, 1.28, t);
-    anim.rotX     = THREE.MathUtils.lerp(0, 0.42, t);
-    anim.rotSpeed = THREE.MathUtils.lerp(0.005, 0.002, t);
-    anim.t4       = 0;
-  } else if (p < 0.40) {
-    const t = (p - 0.20) / 0.20;
-    anim.x        = THREE.MathUtils.lerp(0, -INIT_X, t);
-    anim.scale    = THREE.MathUtils.lerp(1.28, 1.0, t);
-    anim.rotX     = THREE.MathUtils.lerp(0.42, 0, t);
-    anim.rotSpeed = THREE.MathUtils.lerp(0.002, 0.044, t);
-    anim.t4       = 0;
-  } else {
-    const t = (p - 0.40) / 0.60;
-    const wobble = fill < 0.12 ? Math.sin(t * Math.PI * 5) * 0.22 * (1 - fill / 0.12) : 0;
-    anim.x        = THREE.MathUtils.lerp(-INIT_X, 0, t) + wobble;
-   
-    anim.rotX     = 0.38 * (1 - Math.min(fill / 0.18, 1));
-    anim.rotSpeed = THREE.MathUtils.lerp(0.044, 0.002, Math.min(fill / 0.35, 1));
-    
-    anim.scale    = THREE.MathUtils.lerp(1.0, 9.0, fill);
-    anim.t4       = fill;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.body.style.background = `rgb(${BG_END.r},${BG_END.g},${BG_END.b})`;
+    document.documentElement.classList.add('revealed');
+    return;
   }
-}, { passive: true });
+
+  clickActive = true;
+  clickProgress = 0;
+  lycheBtn.style.opacity = '0';
+  lycheBtn.style.pointerEvents = 'none';
+  if (paused) {
+    paused = false;
+    animate();
+  }
+}
+
+renderer.domElement.addEventListener('mousemove', (e) => {
+  if (clickActive) return;
+  pointer.x = (e.clientX / innerWidth) * 2 - 1;
+  pointer.y = -(e.clientY / innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  isHovering = raycaster.intersectObjects([skinMesh]).length > 0;
+  renderer.domElement.style.cursor = isHovering ? 'pointer' : 'default';
+});
+
+renderer.domElement.addEventListener('click', (e) => {
+  if (clickActive) return;
+  pointer.x = (e.clientX / innerWidth) * 2 - 1;
+  pointer.y = -(e.clientY / innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  if (raycaster.intersectObjects([skinMesh]).length) {
+    startReveal();
+  }
+});
+
+lycheBtn.addEventListener('click', startReveal);
 
 window.addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
   _lycheScale = THREE.MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
-  cachePositions();
 });
 
 let tick = 0;
@@ -154,18 +154,22 @@ let rafId = null;
 let paused = false;
 let _lastCoversScreen = false;
 
-function resume() {
-  if (paused) {
-    paused = false;
-    animate();
-  }
-}
-
-window.addEventListener("scroll", resume, { passive: true });
-
 function animate() {
   rafId = requestAnimationFrame(animate);
   tick += 0.01;
+
+  if (clickActive) {
+    clickProgress = Math.min(clickProgress + 0.013, 1);
+    const ease = 1 - Math.pow(1 - clickProgress, 2.5);
+
+    anim.x        = THREE.MathUtils.lerp(INIT_X, 0, Math.min(clickProgress * 5, 1));
+    anim.scale    = THREE.MathUtils.lerp(1.0, 9.0, ease);
+    anim.t4       = Math.max(0, (clickProgress - 0.12) / 0.88);
+    anim.rotX     = 0;
+    anim.rotSpeed = THREE.MathUtils.lerp(0.005, 0.002, Math.min(clickProgress * 2, 1));
+  } else {
+    anim.scale = isHovering ? 1.06 : 1.0;
+  }
 
   const L = 0.07;
   cur.x        += (anim.x        - cur.x)        * L;
@@ -206,10 +210,11 @@ function animate() {
   controls.update();
   renderer.render(scene, camera);
 
-  if (cur.t4 > 0.99 && meshOpacity < 0.01) {
+  if (clickActive && cur.t4 > 0.99 && meshOpacity < 0.01) {
     cancelAnimationFrame(rafId);
     paused = true;
     document.body.style.background = `rgb(${BG_END.r},${BG_END.g},${BG_END.b})`;
+    document.documentElement.classList.add('revealed');
   }
 }
 
@@ -233,6 +238,14 @@ const countObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 
 document.querySelectorAll('dd[data-target]').forEach(el => countObserver.observe(el));
+
+const s5Title = document.getElementById('s5-title');
+if (s5Title) {
+  const words = s5Title.textContent.trim().split(/\s+/);
+  s5Title.innerHTML = words
+    .map((w, i) => `<span class="word" style="--i:${i}">${w}</span>`)
+    .join(' ');
+}
 
 function launchConfetti() {
   const colors = ['#c9293f', '#111111', '#f9e9e9', '#ffffff', '#e8394f', '#ffaaaa'];
@@ -259,7 +272,6 @@ const contactStatus = document.getElementById('contact-status');
 
 contactForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-
 
   if (contactForm.querySelector('[name="_gotcha"]').value) return;
 
@@ -298,7 +310,7 @@ contactForm.addEventListener('submit', async (e) => {
 });
 
 const track = document.getElementById('work-track');
-const cardWidth = () => track.querySelector('article').offsetWidth + 16; 
+const cardWidth = () => track.querySelector('article').offsetWidth + 16;
 document.getElementById('work-prev').addEventListener('click', () => {
   track.scrollBy({ left: -cardWidth(), behavior: 'smooth' });
 });
