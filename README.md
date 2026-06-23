@@ -81,22 +81,6 @@ Scroll-gestuurde animaties via `animation-timeline: view()` en `animation-range:
 
 ---
 
-## Lokale ontwikkeling
-
-```bash
-npm install
-npm run dev      # Dev server op localhost:5173
-npm run build    # Productie-build naar dist/
-```
-
----
-
 ## Deployment
 
-Netlify deployt automatisch bij elke push naar `main`. De `netlify.toml` configureert het build commando en de publish directory:
-
-```toml
-[build]
-  command = "npm run build"
-  publish = "dist"
-```
+Bij elke push naar `main` bouwt Netlify automatisch via de `netlify.toml` en zet de gebouwde `dist/` live op [lychees.studio](https://lychees.studio).
