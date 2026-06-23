@@ -512,17 +512,29 @@ html.revealed footer {
   article {
     border-radius: 0.8rem;
     height: 24rem;
-    background: #fff;
+    background: #2a1a1a;
     padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     gap: 0.4rem;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
     position: relative;
     overflow: hidden;
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
+      opacity: 1;
+      transition: opacity 0.4s;
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
 
     &::after {
       content: "";
@@ -576,17 +588,6 @@ html.revealed footer {
     box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
   }
 
-  li:first-child article {
-    background-image: url(../images/luxcleaning.avif);
-  }
-
-  li:nth-of-type(2) article {
-    background-image: url(../images/strakplan.avif);
-  }
-
-  li:nth-of-type(3) article {
-    background-image: url(../images/artquake.avif);
-  }
 }
 
 :is(#work-prev, #work-next) {
