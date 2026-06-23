@@ -1,13 +1,32 @@
-import * as THREE from "three";
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  AmbientLight,
+  DirectionalLight,
+  DataTexture,
+  RedFormat,
+  NearestFilter,
+  MeshToonMaterial,
+  MeshBasicMaterial,
+  BackSide,
+  SphereGeometry,
+  CircleGeometry,
+  Mesh,
+  Group,
+  Raycaster,
+  Vector2,
+  MathUtils,
+} from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const scene = new THREE.Scene();
+const scene = new Scene();
 scene.background = null;
 
-const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
+const camera = new PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
 camera.position.set(0, 0.5, 5.5);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+const renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -26,20 +45,20 @@ controls.enableRotate = false;
 controls.enablePan = false;
 controls.enableZoom = false;
 
-scene.add(new THREE.AmbientLight(0xffffff, 1.8));
-const sun = new THREE.DirectionalLight(0xffffff, 2.0);
+scene.add(new AmbientLight(0xffffff, 1.8));
+const sun = new DirectionalLight(0xffffff, 2.0);
 sun.position.set(5, 8, 6);
 scene.add(sun);
-const fillLight = new THREE.DirectionalLight(0xffccdd, 0.8);
+const fillLight = new DirectionalLight(0xffccdd, 0.8);
 fillLight.position.set(-4, 2, -3);
 scene.add(fillLight);
 
 const gradData = new Uint8Array([60, 140, 230]);
-const gradMap = new THREE.DataTexture(gradData, 3, 1, THREE.RedFormat);
-gradMap.minFilter = THREE.NearestFilter;
-gradMap.magFilter = THREE.NearestFilter;
+const gradMap = new DataTexture(gradData, 3, 1, RedFormat);
+gradMap.minFilter = NearestFilter;
+gradMap.magFilter = NearestFilter;
 gradMap.needsUpdate = true;
-const toon = (color) => new THREE.MeshToonMaterial({ color, gradientMap: gradMap });
+const toon = (color) => new MeshToonMaterial({ color, gradientMap: gradMap });
 
 const noise = (x, y, z, f, a) =>
   (Math.sin(x * f) * Math.cos(y * f * 1.3) * Math.sin(z * f * 0.9) +
@@ -59,33 +78,33 @@ const displace = (geo) => {
   geo.computeVertexNormals();
 };
 
-const group = new THREE.Group();
+const group = new Group();
 group.position.set(INIT_X, 0, 0);
 scene.add(group);
 
-const skinGeo = new THREE.SphereGeometry(1, 48, 48);
+const skinGeo = new SphereGeometry(1, 48, 48);
 displace(skinGeo);
 
 const skinMat = toon(0xc9293f);
 skinMat.transparent = true;
-const skinMesh = new THREE.Mesh(skinGeo, skinMat);
+const skinMesh = new Mesh(skinGeo, skinMat);
 group.add(skinMesh);
 
-const outlineMat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a, side: THREE.BackSide, transparent: true });
-const outlineMesh = new THREE.Mesh(skinGeo, outlineMat);
+const outlineMat = new MeshBasicMaterial({ color: 0x1a1a1a, side: BackSide, transparent: true });
+const outlineMesh = new Mesh(skinGeo, outlineMat);
 outlineMesh.scale.setScalar(1.044);
 group.add(outlineMesh);
 
-const blobMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.07 });
-const blob = new THREE.Mesh(
-  new THREE.CircleGeometry(0.9, 48),
+const blobMat = new MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.07 });
+const blob = new Mesh(
+  new CircleGeometry(0.9, 48),
   blobMat
 );
 blob.rotation.x = -Math.PI / 2;
 blob.position.y = -1.32;
 group.add(blob);
 
-let _lycheScale = THREE.MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
+let _lycheScale = MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
 function lycheScale() { return _lycheScale; }
 
 const anim = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
@@ -94,8 +113,8 @@ const cur  = { x: INIT_X, scale: 1.0, rotX: 0, rotSpeed: 0.005, t4: 0 };
 const BG_START = { r: 249, g: 233, b: 233 };
 const BG_END   = { r: 201, g: 41,  b: 63  };
 
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
+const raycaster = new Raycaster();
+const pointer = new Vector2();
 let isHovering = false;
 let clickActive = false;
 let clickProgress = 0;
@@ -148,7 +167,7 @@ window.addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-  _lycheScale = THREE.MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
+  _lycheScale = MathUtils.clamp(innerWidth / 1100, 0.5, 1.0);
 });
 
 let tick = 0;
@@ -164,11 +183,11 @@ function animate() {
     clickProgress = Math.min(clickProgress + 0.013, 1);
     const ease = 1 - Math.pow(1 - clickProgress, 2.5);
 
-    anim.x        = THREE.MathUtils.lerp(INIT_X, 0, Math.min(clickProgress * 5, 1));
-    anim.scale    = THREE.MathUtils.lerp(1.0, 9.0, ease);
+    anim.x        = MathUtils.lerp(INIT_X, 0, Math.min(clickProgress * 5, 1));
+    anim.scale    = MathUtils.lerp(1.0, 9.0, ease);
     anim.t4       = Math.max(0, (clickProgress - 0.12) / 0.88);
     anim.rotX     = 0;
-    anim.rotSpeed = THREE.MathUtils.lerp(0.005, 0.002, Math.min(clickProgress * 2, 1));
+    anim.rotSpeed = MathUtils.lerp(0.005, 0.002, Math.min(clickProgress * 2, 1));
   } else {
     anim.scale = isHovering ? 1.06 : 1.0;
   }
@@ -203,7 +222,7 @@ function animate() {
       : `rgb(${BG_START.r},${BG_START.g},${BG_START.b})`;
   }
 
-  const fadeT = THREE.MathUtils.smoothstep(cur.t4, 0.75, 0.98);
+  const fadeT = MathUtils.smoothstep(cur.t4, 0.75, 0.98);
   const meshOpacity = 1 - fadeT;
   skinMat.opacity    = meshOpacity;
   outlineMat.opacity = meshOpacity;
@@ -221,6 +240,15 @@ function animate() {
 }
 
 animate();
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; paused = true; }
+  } else if (paused && !document.documentElement.classList.contains('revealed')) {
+    paused = false;
+    animate();
+  }
+});
 
 const countObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {

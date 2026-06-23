@@ -41,11 +41,6 @@
 
     <link rel="icon" href="images/logo.png" />
 
-    <link rel="preconnect" href="https://unpkg.com" crossorigin />
-    <link
-      rel="modulepreload"
-      href="https://unpkg.com/three@0.160.0/build/three.module.js"
-    />
 
     <link rel="stylesheet" href="styles/styleguide.css" />
     <link rel="stylesheet" href="styles/style.css" />
@@ -386,14 +381,6 @@
       </nav>
     </footer>
 
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
-      }
-    </script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="/main.js"></script>
   </body>
 </html>
